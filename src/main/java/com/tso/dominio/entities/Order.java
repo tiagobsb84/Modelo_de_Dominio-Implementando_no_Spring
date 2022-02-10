@@ -1,6 +1,8 @@
 package com.tso.dominio.entities;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -23,6 +26,9 @@ public class Order {
 	@ManyToOne
 	@JoinColumn(name = "cliente_id")
 	private Cliente cliente;
+	
+	@OneToMany(mappedBy = "order")
+	private List<OrderItems> items = new ArrayList<>();
 	
 	public Order() {
 	}
@@ -66,5 +72,17 @@ public class Order {
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
 	}
-	 
+
+	public List<OrderItems> getItems() {
+		return items;
+	} 
+	
+	public double getTotal() {
+		double sum = 0.0;
+		for(OrderItems item : items) {
+			sum += item.getSubTotal();
+		}
+		
+		return sum;
+	}
 }
